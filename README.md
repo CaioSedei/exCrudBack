@@ -20,3 +20,6 @@ adicionar em scripts
 
 adicionar em scripts
     "test": "cross-env TEST=true node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage"
+
+baixar libs para o banco de dados
+npm install sequelize mysql2
