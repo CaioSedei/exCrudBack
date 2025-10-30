@@ -1,29 +1,43 @@
-import ModelUser from '../model/user.js'
+import User from '../model/user.js'
 
 class ServiceUser {
     FindAll() {
-        return ModelUser.FindAll()
+        return User.FindAll()
     }
 
-    FindOne(index) {
-        //VERIFICAR SE O INDEX É VALIDO
-        return ModelUser.FindOne(index)
+    async FindOne(id) {
+        //VERIFICAR SE O id É VALIDO
+        if (!id) {
+            throw new Error('Favor informar o ID')
+        }
+        const user = await User.findByPk(id)
+
+        if (!user) {
+            throw new Error("Usuário não encontrado")
+        }
+
+        return user
 
     }
 
-    Create(nome) {
-        return ModelUser.Create(nome)
+    async Create(nome, email, senha, ativo) {
+        if (!nome || !email || !senha) {
+            throw new Error('Favor preencher todos os campos')
+        }
+
+        await User.create({
+            nome, email, senha, ativo
+        })
+    }
+
+    Update(id, nome) {
+        //VERIFICAR SE O id E NOME SÃO VALIDOS
+        User.Update(id, nome)
 
     }
 
-    Update(index, nome) {
-        //VERIFICAR SE O INDEX E NOME SÃO VALIDOS
-        ModelUser.Update(index, nome)
-
-    }
-
-    Delete(index) {
-        ModelUser.Delete(index)
+    Delete(id) {
+        User.Delete(id)
 
     }
 }
