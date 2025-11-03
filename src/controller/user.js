@@ -39,30 +39,31 @@ class ControllerUser {
         }
     }
 
-    Update(req, res) {
+    async Update(req, res) {
         try {
             const id = req.params.id
-            const nome = req.body.nome
-            ServiceUser.Update(id, nome)
+            const { nome, email, senha, ativo } = req.body
+            ServiceUser.Update(id, nome, email, senha, ativo)
             res.status(200).send()
 
         } catch (error) {
             res.status(500).send({ error: error.message })
-
         }
+
     }
 
-    Delete(req, res) {
+    async Delete(req, res) {
         try {
             const id = req.params.id
-            ServiceUser.Delete(id)
-            res.status(204).send()
+            await ServiceUser.Delete(id)
+            res.status(204).send("usuario deletado com sucesso")
 
         } catch (error) {
             res.status(500).send({ error: error.message })
-
         }
+
     }
+
 }
 
 export default new ControllerUser()

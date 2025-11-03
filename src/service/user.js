@@ -30,15 +30,37 @@ class ServiceUser {
         })
     }
 
-    Update(id, nome) {
-        //VERIFICAR SE O id E NOME SÃO VALIDOS
-        User.Update(id, nome)
+    async Update(id, nome, email, senha, ativos) {
+        if (!id | !nome | !email | !senha) {
+            throw new Error("Favor preencher todos campos")
+        }
 
+        const user = await User.findByPk(id)
+
+        if (!user) {
+            throw new Error(`usuário ${id} não foi encontrado`)
+        }
+
+        user.nome = nome
+        user.email = email
+        user.senha = senha
+        user.ativo = ativos
+
+        await user.save()
     }
 
-    Delete(id) {
-        User.Delete(id)
+    async Delete(id) {
+        if (!id) {
+            throw new Error("Informar ID valido")
+        }
 
+        const user = await User.findByPk(id)
+
+        if (!user) {
+            throw new Error(`usuário ${id} não foi encontrado`)
+        }
+
+        await user.destroy()
     }
 }
 
