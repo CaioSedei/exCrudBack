@@ -23,3 +23,7 @@ adicionar em scripts
 
 baixar libs para o banco de dados
 npm install sequelize mysql2
+
+baixar lib para autenticaçao
+npm i jsonwebtoken 
+npm i jsonwebtoken bcrypt

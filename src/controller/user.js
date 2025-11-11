@@ -3,14 +3,17 @@ import ServiceUser from '../service/user.js'
 
 class ControllerUser {
 
-    FindAll(_, res) {
+    async FindAll(req, res) {
         try {
-            const nomes = ServiceUser.FindAll()
+
+            const nomes = await ServiceUser.FindAll()
+            console.log(nomes)
             res.status(200).send({ nomes })
+
         } catch (error) {
             res.status(500).send({ error: error.message })
-
         }
+
     }
 
     async FindOne(req, res) {
@@ -61,6 +64,19 @@ class ControllerUser {
         } catch (error) {
             res.status(500).send({ error: error.message })
         }
+
+    }
+
+    async Login(req, res) {
+        try {
+            const { email, senha } = req.body
+            const token = await ServiceUser.Login(email, senha)
+            res.status(200).send({ token })
+        } catch (error) {
+            res.status(500).send({ error: error.message })
+        }
+
+
 
     }
 
