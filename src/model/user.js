@@ -22,6 +22,10 @@ class User {
             ativo: {
                 type: database.db.Sequelize.BOOLEAN
 
+            },
+            permissao: {
+                type: database.db.Sequelize.INTEGER
+
             }
         })
     }

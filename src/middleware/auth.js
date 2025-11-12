@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import ServiceUser from '../service/user.js'
 
+
+
 const JWT_SEGREDO = "Batata"
 
 export default async function authMiddleware(req, res, next) {
@@ -15,6 +17,7 @@ export default async function authMiddleware(req, res, next) {
         const decoded = jwt.verify(token.split(' ')[1], JWT_SEGREDO)
 
         const user = await ServiceUser.FindOne(decoded.id)
+
         req.headers.user = user
         // se der certo
         next()

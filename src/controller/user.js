@@ -18,6 +18,7 @@ class ControllerUser {
 
     async FindOne(req, res) {
         try {
+            console.log(req.headers.user)
             const id = req.params.id
             const user = await ServiceUser.FindOne(id)
             res.status(200).send({ user })
@@ -33,7 +34,7 @@ class ControllerUser {
             const { nome, email, senha, ativo } = req.body
             // console.log("tiu",nome)
             // console.log("tiuboddy", req.body.nome) EXEMPLO DE VERIFIÇÃO DE ERROS
-            await ServiceUser.Create(nome, email, senha, ativo)
+            await ServiceUser.Create(nome, email, senha, ativo, 1)
             res.status(201).send({})
 
         } catch (error) {

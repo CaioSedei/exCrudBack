@@ -1,7 +1,9 @@
 import User from '../model/user.js'
 import jwt from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
 const JWT_SEGREDO = "Batata"
+const SALT = 10
 
 class ServiceUser {
 
@@ -24,33 +26,31 @@ class ServiceUser {
 
     }
 
-    async Create(nome, email, senha, ativo) {
+    async Create(nome, email, senha, ativo, permissao) {
         if (!nome || !email || !senha) {
             throw new Error('Favor preencher todos os campos')
         }
 
+        const senhaCrip = await bcrypt.hash(String(senha), SALT)
+
         await User.create({
-            nome, email, senha, ativo
+            nome,
+            email,
+            senha: senhaCrip,
+            ativo,
+            permissao
         })
     }
 
-    async Update(id, nome, email, senha, ativos) {
-        if (!id | !nome | !email | !senha) {
-            throw new Error("Favor preencher todos campos")
-        }
+    async Update(id, nome, senha) {
+        const oldUser = await User.findByPk(id)
+        oldUser.senha = senha
+            ? await bcrypt.hash(String(senha), SALT)
+            : oldUser.senha
 
-        const user = await User.findByPk(id)
+        oldUser.nome = nome || oldUser.nome
 
-        if (!user) {
-            throw new Error(`usuário ${id} não foi encontrado`)
-        }
-
-        user.nome = nome
-        user.email = email
-        user.senha = senha
-        user.ativo = ativos
-
-        await user.save()
+        oldUser.save()
     }
 
     async Delete(id) {
@@ -73,12 +73,15 @@ class ServiceUser {
         }
         const user = await User.findOne({ where: { email } })
 
-        if (!user || user.senha !== senha) {
+        if (
+            !user
+            || !(await bcrypt.compare(String(senha), user.senha))
+        ) {
             throw new Error("Email ou senha inválidos.")
         }
 
-        return jwt.sign({ id: user.id, nome: user.nome },
-            JWT_SEGREDO, 
+        return jwt.sign({ id: user.id, nome: user.nome, permissao: user.permissao },
+            JWT_SEGREDO,
             { expiresIn: 60 * 60 }
         )
 
