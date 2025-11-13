@@ -27,3 +27,20 @@ npm install sequelize mysql2
 baixar lib para autenticaçao
 npm i jsonwebtoken 
 npm i jsonwebtoken bcrypt
+
+
+
+ exemplo para erros
+async Create(req, res) {
+        try {
+            const { nome, email, senha, ativo } = req.body
+            // console.log("tiu",nome)
+            // console.log("tiuboddy", req.body.nome) EXEMPLO DE VERIFIÇÃO DE ERROS
+            await ServiceUser.Create(nome, email, senha, ativo, 1)
+            res.status(201).send({})
+
+        } catch (error) {
+            res.status(500).send({ error: error.message })
+
+        }
+    }

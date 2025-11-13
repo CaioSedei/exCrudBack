@@ -42,13 +42,15 @@ class ServiceUser {
         })
     }
 
-    async Update(id, nome, senha) {
+    async Update(id, nome, email, senha,ativo) {
         const oldUser = await User.findByPk(id)
         oldUser.senha = senha
             ? await bcrypt.hash(String(senha), SALT)
             : oldUser.senha
 
         oldUser.nome = nome || oldUser.nome
+        oldUser.email = email || oldUser.email
+        oldUser.ativo = ativo || oldUser.ativo
 
         oldUser.save()
     }

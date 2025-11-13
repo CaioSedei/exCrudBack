@@ -3,7 +3,7 @@ import ServiceUser from '../service/user.js'
 
 class ControllerUser {
 
-    async FindAll(req, res) {
+    async FindAll(_, res) {
         try {
 
             const nomes = await ServiceUser.FindAll()
@@ -31,10 +31,15 @@ class ControllerUser {
 
     async Create(req, res) {
         try {
+            const loggedUser = req.headers?.user
+            let permissao = 1
+            if (loggedUser && loggedUser.permissao === 0) {
+                permissao = req.body.permissao
+            }
             const { nome, email, senha, ativo } = req.body
             // console.log("tiu",nome)
             // console.log("tiuboddy", req.body.nome) EXEMPLO DE VERIFIÇÃO DE ERROS
-            await ServiceUser.Create(nome, email, senha, ativo, 1)
+            await ServiceUser.Create(nome, email, senha, ativo, permissao)
             res.status(201).send({})
 
         } catch (error) {
@@ -45,9 +50,9 @@ class ControllerUser {
 
     async Update(req, res) {
         try {
-            const id = req.params.id
+            const id = req.params.id || req.headers?.user?.id
             const { nome, email, senha, ativo } = req.body
-            ServiceUser.Update(id, nome, email, senha, ativo)
+            await ServiceUser.Update(id, nome, email, senha, ativo)
             res.status(200).send()
 
         } catch (error) {
@@ -58,7 +63,7 @@ class ControllerUser {
 
     async Delete(req, res) {
         try {
-            const id = req.params.id
+            const id = req.params.id || req.headers?.user?.id
             await ServiceUser.Delete(id)
             res.status(204).send("usuario deletado com sucesso")
 
